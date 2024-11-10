@@ -74,11 +74,9 @@ const Upload = () => {
         } else {
           setUploadStage("complete");
           toast("File uploaded successfully");
-          setTimeout(() => {
-            setUploadStage("");
-            setLoading(false);
-            router.push(`file-preview/${fileId}`);
-          }, 1000);
+          setUploadStage("");
+          setLoading(false);
+          router.push(`file-preview/${fileId}`);
         }
       }
     }
