@@ -24,7 +24,7 @@ interface EmailTemplateProps {
 }
 
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL
-  ? `https://${process.env.NEXT_PUBLIC_BASE_URL}`
+  ? `${process.env.NEXT_PUBLIC_BASE_URL}`
   : "";
 
 export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
@@ -39,7 +39,7 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
           src={`${baseUrl}/logo.png`}
           width="150"
           height="100"
-          alt="Linear"
+          alt="Sharefolio"
           style={logo}
         />
         <Heading style={heading}>
@@ -61,8 +61,8 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
 
 const logo = {
   borderRadius: 21,
-  width: 42,
-  height: 42,
+  width: 150,
+  height: 100,
 };
 
 const main = {
