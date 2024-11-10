@@ -29,10 +29,17 @@ import {
   FileIcon,
   Loader2,
   Check,
+  InfoIcon,
 } from "lucide-react";
 import bcrypt from "bcryptjs";
 import emailService from "@/app/_utils/GlobalApi";
 import { useUser } from "@clerk/nextjs";
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip";
 
 type Params = {
   fileId: string;
@@ -284,10 +291,26 @@ const FilePreview = () => {
 
           <form onSubmit={handleShare} className="space-y-4 pt-2">
             <div className="space-y-2">
-              <Label className="text-sm font-medium flex items-center gap-2">
-                <Mail className="w-4 h-4 text-primary" />
-                Share via Email
-              </Label>
+              <div className="flex items-center gap-2">
+                <Label className="text-sm font-medium flex items-center gap-2">
+                  <Mail className="w-4 h-4 text-primary" />
+                  Share via Email
+                </Label>
+                <TooltipProvider>
+                  <Tooltip delayDuration={300}>
+                    <TooltipTrigger asChild>
+                      <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help transition-colors" />
+                    </TooltipTrigger>
+                    <TooltipContent className="mx-5 w-full max-w-[90vw] sm:max-w-[300px] text-sm bg-white p-3 shadow-lg rounded-lg border border-gray-200">
+                      <p className="text-sm text-gray-600 leading-relaxed">
+                        This is using a free public domain and only allows
+                        sending emails to your own email address.
+                      </p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+
               <div className="flex gap-2">
                 <div className="flex-1">
                   <Input
