@@ -38,7 +38,7 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
         <Img
           src={`${baseUrl}/logo.png`}
           width="150"
-          height="100"
+          height="50"
           alt="Sharefolio"
           style={logo}
         />
@@ -62,7 +62,7 @@ export const EmailTemplate: React.FC<Readonly<EmailTemplateProps>> = ({
 const logo = {
   borderRadius: 21,
   width: 150,
-  height: 100,
+  height: 50,
 };
 
 const main = {
