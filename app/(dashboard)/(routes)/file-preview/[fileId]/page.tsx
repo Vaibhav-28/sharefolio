@@ -114,10 +114,16 @@ const FilePreview = () => {
         userName: user?.fullName,
         url: file?.shortUrl,
       } as EmailData;
-      emailService.sendEmail(data).then(() => {
-        toast("Email sent successfully");
-        setSendingEmail(false);
-      });
+      emailService
+        .sendEmail(data)
+        .then(() => {
+          toast("Email sent successfully");
+          setSendingEmail(false);
+        })
+        .catch((err) => {
+          toast.error(err?.message);
+          setSendingEmail(false);
+        });
     }
   };
 
