@@ -158,14 +158,13 @@ const Files = () => {
         <div className="divide-y">
           {files.map((file) => (
             <div key={file?.id}>
-              {/* Desktop Layout */}
               <div className="hidden sm:grid grid-cols-12 py-3 px-4 items-center hover:bg-gray-50">
                 <div className="col-span-6 flex items-center gap-3">
                   <FileIcon className="h-5 w-5 text-primary" />
                   <span className="truncate">{file?.name}</span>
                 </div>
                 <div className="col-span-2 text-sm text-gray-600">
-                  {file.size}
+                  {file.size} B
                 </div>
                 <div className="col-span-2 text-sm text-gray-600">
                   {file?.type.split("/")[1].toUpperCase()}
@@ -203,14 +202,13 @@ const Files = () => {
                 </div>
               </div>
 
-              {/* Mobile Layout */}
               <div className="sm:hidden p-4 hover:bg-gray-50">
                 <div className="flex items-center justify-between  gap-3">
                   <div className="flex items-start gap-3 min-w-0 flex-1">
                     <div className="min-w-0 flex-1">
                       <p className="font-medium truncate">{file.name}</p>
                       <div className="flex items-center gap-2 text-sm text-gray-600 mt-1">
-                        <span>{file.size}</span>
+                        <span>{file.size} B</span>
                         <span>•</span>
                         <span>{file?.type.split("/")[1].toUpperCase()}</span>
                       </div>
