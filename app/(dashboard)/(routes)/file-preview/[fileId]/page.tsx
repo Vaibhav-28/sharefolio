@@ -76,6 +76,7 @@ const FilePreview = () => {
   const [showCopiedAlert, setShowCopiedAlert] = useState(false);
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
+  const [sendingEmail, setSendingEmail] = useState(false);
   const [showPasswordConfirmDialog, setShowPasswordConfirmDialog] =
     useState(false);
 
@@ -106,6 +107,7 @@ const FilePreview = () => {
 
   const handleShare = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
+    setSendingEmail(true);
     if (user?.fullName && file) {
       const data = {
         email,
@@ -114,6 +116,7 @@ const FilePreview = () => {
       } as EmailData;
       emailService.sendEmail(data).then(() => {
         toast("Email sent successfully");
+        setSendingEmail(false);
       });
     }
   };
@@ -193,7 +196,6 @@ const FilePreview = () => {
           </CardTitle>
         </CardHeader>
         <CardContent className="space-y-6">
-          {/* File Information */}
           <div className="flex items-center gap-4 border border-gray-100 rounded-lg p-4 bg-white shadow-sm">
             <div className="h-12 w-12 flex items-center justify-center rounded-lg bg-primary/10 text-primary">
               {getFileIcon()}
@@ -215,7 +217,6 @@ const FilePreview = () => {
             </div>
           </div>
 
-          {/* Share URL */}
           <div className="space-y-2">
             <Label className="text-sm font-medium flex items-center gap-2">
               <LinkIcon className="w-4 h-4 text-primary" />
@@ -239,7 +240,6 @@ const FilePreview = () => {
             </div>
           </div>
 
-          {/* Password Protection Toggle */}
           <div className="flex items-center justify-between p-4 bg-gray-50 rounded-lg">
             <div className="flex items-center gap-2">
               <Lock className="w-4 h-4 text-primary" />
@@ -252,7 +252,6 @@ const FilePreview = () => {
             />
           </div>
 
-          {/* Password Input */}
           {isPasswordProtected && (
             <div className="space-y-2 animate-in fade-in slide-in-from-top duration-300">
               <Label className="text-sm font-medium">Set Password</Label>
@@ -277,7 +276,6 @@ const FilePreview = () => {
             </div>
           )}
 
-          {/* Email Share Form */}
           <form onSubmit={handleShare} className="space-y-4 pt-2">
             <div className="space-y-2">
               <Label className="text-sm font-medium flex items-center gap-2">
@@ -297,15 +295,19 @@ const FilePreview = () => {
                 </div>
                 <Button
                   type="submit"
+                  disabled={sendingEmail}
                   className="bg-primary hover:bg-primary/90 text-white flex items-center gap-2"
                 >
-                  Share
+                  {sendingEmail ? (
+                    <Loader2 className="animate-spin" />
+                  ) : (
+                    "Share"
+                  )}
                 </Button>
               </div>
             </div>
           </form>
 
-          {/* Copied Alert */}
           {showCopiedAlert && (
             <Alert className="bg-primary/10 border-primary/20 animate-in fade-in slide-in-from-top duration-300">
               <AlertDescription className="text-primary font-medium flex items-center gap-2">
