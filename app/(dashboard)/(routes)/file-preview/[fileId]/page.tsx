@@ -112,8 +112,8 @@ const FilePreview = () => {
         userName: user?.fullName,
         url: file?.shortUrl,
       } as EmailData;
-      emailService.sendEmail(data).then((res) => {
-        console.log(res);
+      emailService.sendEmail(data).then(() => {
+        toast("Email sent successfully");
       });
     }
   };
