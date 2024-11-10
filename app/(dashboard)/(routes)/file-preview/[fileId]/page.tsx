@@ -87,6 +87,12 @@ const FilePreview = () => {
   const [showPasswordConfirmDialog, setShowPasswordConfirmDialog] =
     useState(false);
 
+  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
+
+  const handleTooltipClick = () => {
+    setIsTooltipOpen((prev) => !prev);
+  };
+
   const getFileInfo = async (fileId: string) => {
     setLoading(true);
     const { data, error } = await supabase
@@ -297,9 +303,16 @@ const FilePreview = () => {
                   Share via Email
                 </Label>
                 <TooltipProvider>
-                  <Tooltip delayDuration={300}>
+                  <Tooltip
+                    open={isTooltipOpen}
+                    onOpenChange={setIsTooltipOpen}
+                    delayDuration={300}
+                  >
                     <TooltipTrigger asChild>
-                      <InfoIcon className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help transition-colors" />
+                      <InfoIcon
+                        onClick={handleTooltipClick}
+                        className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help transition-colors"
+                      />
                     </TooltipTrigger>
                     <TooltipContent className="mx-5 w-full max-w-[90vw] sm:max-w-[300px] text-sm bg-white p-3 shadow-lg rounded-lg border border-gray-200">
                       <p className="text-sm text-gray-600 leading-relaxed">
