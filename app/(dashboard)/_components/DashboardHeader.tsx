@@ -38,7 +38,7 @@ const DashboardHeader = () => {
         <SideNav />
         <X
           onClick={() => setOpenSideMenu(false)}
-          className="absolute right-2 top-6 cursor-pointer"
+          className="absolute md:hidden right-2 top-6 cursor-pointer"
         />
       </div>
     </>
