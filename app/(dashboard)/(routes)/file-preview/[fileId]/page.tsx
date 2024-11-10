@@ -314,7 +314,7 @@ const FilePreview = () => {
                         className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help transition-colors"
                       />
                     </TooltipTrigger>
-                    <TooltipContent className="mx-5 w-full max-w-[90vw] sm:max-w-[300px] text-sm bg-white p-3 shadow-lg rounded-lg border border-gray-200">
+                    <TooltipContent className="mx-5 w-full max-w-[250px]  text-sm bg-white p-3 shadow-lg rounded-lg border border-gray-200">
                       <p className="text-sm text-gray-600 leading-relaxed">
                         This is using a free public domain and only allows
                         sending emails to your own email address.
