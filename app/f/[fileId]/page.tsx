@@ -140,7 +140,7 @@ const ViewFile = () => {
   return (
     <>
       <Header />
-      <div className="my-10 bg-gradient-to-br from-primary/5 to-white flex items-center justify-center p-4">
+      <div className="my-12 bg-gradient-to-br from-primary/5 to-white flex items-center justify-center p-4">
         <div className="w-full max-w-xl bg-white rounded-2xl shadow-lg border border-primary/20 overflow-hidden">
           <div className="h-2 bg-gradient-to-r from-primary via-primary/80 to-primary/60"></div>
 
