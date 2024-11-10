@@ -10,7 +10,7 @@ const DashboardHeader = () => {
   return (
     <>
       <div className="h-[68px]" />
-      <div className="flex p-5 bg-white fixed top-0 w-full border-b  items-center justify-between md:justify-end">
+      <div className="flex p-5 shadow-sm bg-white fixed top-0 md:w-fill w-full border-b  items-center justify-between md:justify-end">
         {!openSideMenu && (
           <Menu
             onClick={() => setOpenSideMenu(true)}
