@@ -3,11 +3,20 @@ import Header from "@/app/_components/Header";
 import { Alert, AlertDescription } from "@/components/ui/alert";
 import { Button } from "@/components/ui/button";
 import { supabase } from "@/supabaseClient";
-import { Download, FileText, Lock, Mail, Shield, User } from "lucide-react";
+import {
+  Download,
+  FileText,
+  FileX,
+  Lock,
+  Mail,
+  Shield,
+  User,
+} from "lucide-react";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import bcrypt from "bcryptjs";
+import Link from "next/link";
 
 interface FileInformation {
   email: string;
@@ -130,6 +139,46 @@ const ViewFile = () => {
                 </div>
                 <div className="h-10 bg-primary/10 rounded-xl w-full"></div>
               </div>
+            </div>
+          </div>
+        </div>
+      </>
+    );
+  }
+
+  if (!loading && !file) {
+    return (
+      <>
+        <Header />
+        <div className="min-h-screen bg-gradient-to-br from-primary/5 to-white flex items-center justify-center p-4">
+          <div className="w-full max-w-xl bg-white rounded-2xl shadow-lg border border-primary/20 overflow-hidden">
+            <div className="h-2 bg-gradient-to-r from-primary/60 via-primary/40 to-primary/20"></div>
+            <div className="p-8 space-y-6 text-center">
+              <div className="flex justify-center">
+                <div className="w-20 h-20 bg-primary/5 rounded-full flex items-center justify-center">
+                  <FileX className="w-10 h-10 text-primary/70" />
+                </div>
+              </div>
+              <div className="space-y-2">
+                <h2 className="text-2xl font-semibold text-gray-900">
+                  File Not Found
+                </h2>
+                <p className="text-gray-500">
+                  The file you are looking for may have been moved or does not
+                  exist.
+                </p>
+              </div>
+              <Link href="/">
+                <Button
+                  className="bg-gradient-to-r from-primary to-primary/90 text-white 
+                        py-3 px-6 mt-4 rounded-xl font-medium
+                        shadow-lg shadow-primary/20
+                        hover:shadow-xl hover:shadow-primary/30 
+                        transition-all duration-300 hover:-translate-y-0.5"
+                >
+                  Return Home
+                </Button>
+              </Link>
             </div>
           </div>
         </div>
