@@ -29,17 +29,21 @@ import {
   FileIcon,
   Loader2,
   Check,
-  InfoIcon,
+  MessageCircle,
+  Linkedin,
+  Share2,
+  Send,
+  Facebook,
 } from "lucide-react";
 import bcrypt from "bcryptjs";
-import emailService from "@/app/_utils/GlobalApi";
 import { useUser } from "@clerk/nextjs";
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
 
 type Params = {
   fileId: string;
@@ -56,12 +60,6 @@ interface FileInformation {
   type: string;
   userName: string;
   name: string;
-}
-
-interface EmailData {
-  email: string;
-  userName: string;
-  url: string;
 }
 
 const FilePreview = () => {
@@ -81,17 +79,11 @@ const FilePreview = () => {
   const [password, setPassword] = useState("");
   const [isPasswordProtected, setIsPasswordProtected] = useState(false);
   const [showCopiedAlert, setShowCopiedAlert] = useState(false);
-  const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-  const [sendingEmail, setSendingEmail] = useState(false);
   const [showPasswordConfirmDialog, setShowPasswordConfirmDialog] =
     useState(false);
-
-  const [isTooltipOpen, setIsTooltipOpen] = useState(false);
-
-  const handleTooltipClick = () => {
-    setIsTooltipOpen((prev) => !prev);
-  };
+  const [emailInput, setEmailInput] = useState("");
+  const [isEmailDialogOpen, setIsEmailDialogOpen] = useState(false);
 
   const getFileInfo = async (fileId: string) => {
     setLoading(true);
@@ -118,25 +110,31 @@ const FilePreview = () => {
     resolveParams();
   }, [paramsPromise]);
 
-  const handleShare = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setSendingEmail(true);
-    if (user?.fullName && file) {
-      const data = {
-        email,
-        userName: user?.fullName,
-        url: file?.shortUrl,
-      } as EmailData;
-      emailService
-        .sendEmail(data)
-        .then(() => {
-          toast("Email sent successfully");
-          setSendingEmail(false);
-        })
-        .catch((err) => {
-          toast.error(err?.message);
-          setSendingEmail(false);
-        });
+  const handleShare = (platform: string) => {
+    const shareMessage = `${file?.userName} shared a file with you, follow given link to access it: ${file?.shortUrl}`;
+    const encodedMessage = encodeURIComponent(shareMessage);
+    const urls = {
+      telegram: `https://t.me/share/url?url=${encodeURIComponent(
+        file?.shortUrl || ""
+      )}&text=${encodedMessage}`,
+      facebook: `https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(
+        file?.shortUrl || ""
+      )}`,
+      linkedin: `https://www.linkedin.com/sharing/share-offsite/?url=${encodeURIComponent(
+        file?.shortUrl || ""
+      )}`,
+      whatsapp: `https://wa.me/?text=${encodedMessage}`,
+      email: `mailto:${emailInput}?subject=${encodeURIComponent(
+        `${file?.userName} shared a file with you`
+      )}&body=${encodedMessage}`,
+    };
+
+    if (platform === "email") {
+      window.location.href = urls.email;
+      setIsEmailDialogOpen(false);
+      setEmailInput("");
+    } else {
+      window.open(urls[platform as keyof typeof urls], "_blank");
     }
   };
 
@@ -295,60 +293,94 @@ const FilePreview = () => {
             </div>
           )}
 
-          <form onSubmit={handleShare} className="space-y-4 pt-2">
-            <div className="space-y-2">
-              <div className="flex items-center gap-2">
-                <Label className="text-sm font-medium flex items-center gap-2">
-                  <Mail className="w-4 h-4 text-primary" />
-                  Share via Email
-                </Label>
-                <TooltipProvider>
-                  <Tooltip
-                    open={isTooltipOpen}
-                    onOpenChange={setIsTooltipOpen}
-                    delayDuration={300}
+          <div className="space-y-2 pt-2">
+            <Label className="text-sm font-medium flex items-center gap-2">
+              <Share2 className="w-4 h-4 text-primary" />
+              Share
+            </Label>
+            <div className="flex gap-2 justify-center">
+              <Dialog
+                open={isEmailDialogOpen}
+                onOpenChange={setIsEmailDialogOpen}
+              >
+                <DialogTrigger asChild>
+                  <Button
+                    variant="outline"
+                    size="icon"
+                    className="hover:bg-blue-500 hover:text-white transition-colors"
+                    title="Share via Email"
                   >
-                    <TooltipTrigger asChild>
-                      <InfoIcon
-                        onClick={handleTooltipClick}
-                        className="w-4 h-4 text-gray-400 hover:text-gray-600 cursor-help transition-colors"
+                    <Mail className="w-4 h-4" />
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="w-80 md:w-96 lg:w-full rounded-md">
+                  <DialogHeader>
+                    <DialogTitle>Share via Email</DialogTitle>
+                  </DialogHeader>
+                  <div className="flex items-center space-x-2 pt-4">
+                    <div className="grid flex-1 gap-2">
+                      <Label htmlFor="email" className="sr-only">
+                        Email
+                      </Label>
+                      <Input
+                        id="email"
+                        type="email"
+                        placeholder="Enter recipient's email"
+                        value={emailInput}
+                        onChange={(e) => setEmailInput(e.target.value)}
+                        className="border-gray-300 focus:border-primary focus:ring-primary"
                       />
-                    </TooltipTrigger>
-                    <TooltipContent className="mx-5 w-full max-w-[250px]  text-sm bg-white p-3 shadow-lg rounded-lg border border-gray-200">
-                      <p className="text-sm text-gray-600 leading-relaxed">
-                        This is using a free public domain and only allows
-                        sending emails to your own email address.
-                      </p>
-                    </TooltipContent>
-                  </Tooltip>
-                </TooltipProvider>
-              </div>
+                    </div>
+                    <Button
+                      type="submit"
+                      onClick={() => handleShare("email")}
+                      disabled={!emailInput || !emailInput.includes("@")}
+                      className="bg-primary hover:bg-primary/90"
+                    >
+                      Send
+                    </Button>
+                  </div>
+                </DialogContent>
+              </Dialog>
 
-              <div className="flex gap-2">
-                <div className="flex-1">
-                  <Input
-                    type="email"
-                    value={email}
-                    onChange={(e) => setEmail(e.target.value)}
-                    placeholder="Enter email address"
-                    required
-                    className="border-gray-300 focus:border-primary focus:ring-primary"
-                  />
-                </div>
-                <Button
-                  type="submit"
-                  disabled={sendingEmail}
-                  className="bg-primary hover:bg-primary/90 text-white flex items-center gap-2"
-                >
-                  {sendingEmail ? (
-                    <Loader2 className="animate-spin" />
-                  ) : (
-                    "Share"
-                  )}
-                </Button>
-              </div>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleShare("telegram")}
+                className="hover:bg-[#0088cc] hover:text-white transition-colors"
+                title="Share via Telegram"
+              >
+                <Send className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleShare("facebook")}
+                className="hover:bg-[#4267B2] hover:text-white transition-colors"
+                title="Share via Facebook"
+              >
+                <Facebook className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleShare("linkedin")}
+                className="hover:bg-[#0077B5] hover:text-white transition-colors"
+                title="Share via LinkedIn"
+              >
+                <Linkedin className="w-4 h-4" />
+              </Button>
+              <Button
+                variant="outline"
+                size="icon"
+                onClick={() => handleShare("whatsapp")}
+                className="hover:bg-[#25D366] hover:text-white transition-colors"
+                title="Share via WhatsApp"
+              >
+                <MessageCircle className="w-4 h-4" />
+              </Button>
             </div>
-          </form>
+          </div>
 
           {showCopiedAlert && (
             <Alert className="bg-primary/10 border-primary/20 animate-in fade-in slide-in-from-top duration-300">

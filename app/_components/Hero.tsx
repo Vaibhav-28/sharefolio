@@ -23,13 +23,6 @@ const Hero = () => {
             >
               Get Started
             </a>
-
-            <a
-              className="block w-full rounded px-12 py-3 text-sm font-medium text-primary shadow hover:text-primary/90 focus:outline-none focus:ring active:text-primary/90 sm:w-auto"
-              href="#"
-            >
-              Learn More
-            </a>
           </div>
         </div>
       </div>
