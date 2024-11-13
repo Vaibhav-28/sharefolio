@@ -288,6 +288,7 @@ const ViewFile = () => {
 
             <Button
               onClick={handleDownload}
+              disabled={downloading}
               className="w-full bg-gradient-to-r from-primary to-primary/90 text-white 
                      py-3 px-4 rounded-xl font-medium
                      flex items-center justify-center gap-2
