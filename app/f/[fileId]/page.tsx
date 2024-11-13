@@ -7,6 +7,7 @@ import {
   Download,
   FileText,
   FileX,
+  Loader2,
   Lock,
   Mail,
   Shield,
@@ -41,6 +42,7 @@ const ViewFile = () => {
   const [file, setFile] = useState<FileInformation>();
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
+  const [downloading, setDownlaoding] = useState(false);
 
   const handleDownload = async () => {
     if (file?.password && !password) {
@@ -50,12 +52,14 @@ const ViewFile = () => {
         if (file?.password) {
           const isMatch = await bcrypt.compare(password, file?.password);
           if (isMatch) {
+            setDownlaoding(true);
             setError("");
             const { data, error: downloadError } = await supabase.storage
               .from("files")
               .download(file?.path);
 
             if (downloadError) {
+              setDownlaoding(false);
               toast.error(downloadError?.message);
             } else {
               const url = URL.createObjectURL(data);
@@ -66,17 +70,20 @@ const ViewFile = () => {
               a.click();
               document.body.removeChild(a);
               URL.revokeObjectURL(url);
+              setDownlaoding(false);
             }
           } else {
             setError("Please enter correct password");
           }
         } else {
+          setDownlaoding(true);
           setError("");
           const { data, error: downloadError } = await supabase.storage
             .from("files")
             .download(file?.path);
 
           if (downloadError) {
+            setDownlaoding(false);
             toast.error(downloadError?.message);
           } else {
             const url = URL.createObjectURL(data);
@@ -87,6 +94,7 @@ const ViewFile = () => {
             a.click();
             document.body.removeChild(a);
             URL.revokeObjectURL(url);
+            setDownlaoding(false);
           }
         }
       }
@@ -289,7 +297,11 @@ const ViewFile = () => {
                      focus:outline-none focus:ring-2 focus:ring-primary/20"
             >
               <Download className="w-5 h-5" />
-              <span>Download File</span>
+              {downloading ? (
+                <Loader2 className="animate-spin" />
+              ) : (
+                <span>Download File</span>
+              )}
             </Button>
 
             <p className="text-center text-sm text-gray-500 flex items-center justify-center gap-2">
